@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>webtoon translator</title>
+</head>
+<body>
+    <h1>웹툰 해석기</h1>
+<div>
+    <form action="/webtoon/fileupload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit">
+    </form>
+    <h3>번역된 웹툰</h3><img src="data:image/jpeg;base64,{{ image }}">
+</div>
+</body>
+</html>

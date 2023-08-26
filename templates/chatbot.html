@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>chatbot</title>
+</head>
+<body>
+<h2>chatbot</h2>
+<ul>
+    {% if chat_data: %}
+    {% for c in chat_data%}
+    <li>{{ c }}</li>
+    {% endfor %}
+    {% endif %}
+</ul>
+<form action={{url_for("stt2tts.play_route")}}>
+    <input type="submit" class="btn btn-primary" value="말하기버튼"/>
+</form>
+</body>
+</html>
