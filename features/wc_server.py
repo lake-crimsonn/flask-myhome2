@@ -1,4 +1,4 @@
-from vidstream import StreamingServer, AudioReceiver, CameraClient, ScreenShareClient, AudioSender
+from vidstream import StreamingServer, AudioReceiver, CameraClient, AudioSender
 import tkinter as tk
 import socket
 import threading
@@ -7,12 +7,15 @@ import threading
 class Server:
     def __init__(self, window, client_ip):
         self.local_ip_address = socket.gethostbyname(socket.gethostname())
+        print(socket.gethostname())
         self.vid_recv_port = 5001
         self.aud_recv_port = 5002
         self.vid_send_port = 5003
         self.aud_send_port = 5004
+        print(f"server ip: {self.local_ip_address}\nvid recv port:{self.vid_recv_port}, vid send port:{self.vid_send_port}\naud recv port:{self.aud_recv_port}, aud send port:{self.aud_send_port}")
 
-        self.start_listening()
+        # recvs = self.start_listening()
+        recvs = None
 
         self.client_ip = client_ip
 
@@ -22,6 +25,16 @@ class Server:
         btn_camera = tk.Button(window, text='화상 전화 시작하기',
                                width=30, command=self.start_camera_stream)
         btn_camera.pack(anchor=tk.CENTER, expand=True)
+
+        window.protocol('WM_DELETE_WINDOW',
+                        lambda: self.exit_fn(window, recvs))
+
+    def exit_fn(self, window, recvs):
+        if recvs is None:
+            return
+        recvs[0].stop_server()
+        recvs[1].stop_server()
+        window.destroy()
 
     def start_listening(self):
         stream_recv = StreamingServer(
@@ -33,6 +46,7 @@ class Server:
         t2.daemon = True
         t1.start()
         t2.start()
+        return [stream_recv, audio_recv]
 
     def start_camera_stream(self):
         camera_client = CameraClient(self.client_ip, self.vid_send_port)
@@ -47,11 +61,15 @@ class Server:
 
 
 def start_video_call(client_ip):
-    window = tk.Tk()
-    window.title('server video call')
-    window.geometry('300x100')
-    Server(window, client_ip)
-    window.mainloop()
+    try:
+        window = tk.Tk()
+        window.title('server video call')
+        window.geometry('350x100')
+        sv = Server(window, client_ip)
+        recvs = sv.start_listening()
+        window.mainloop()
+    except:
+        sv.exit_fn(window, recvs)
 
 
 if __name__ == '__main__':

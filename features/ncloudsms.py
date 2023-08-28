@@ -10,10 +10,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def sendmsg(to_number="01089475740", content="메세지 내용이야"):
+def sendmsg(to_number="secret", content="메세지 내용이야"):
 
     # 메세지 정보
-    from_number = "01089475740"
+    from_number = os.environ.get("from_num")
     sms_type = "SMS"  # 메세지 종류 SMS, LMS, MMS
     content_type = "COMM"  # 메시지 타입, COMM: 일반, AD: 광고
     country_number = "82"  # 국가 코드, 디폴트: 82
